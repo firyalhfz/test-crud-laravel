@@ -10,16 +10,14 @@ class TestController extends Controller
     
     public function index()
     {
-        $tests = Test::latest()->paginate(5);
+        // $tests = Test::latest()->paginate(5);
 
-        return view('test.index', compact('tests'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        return response()->json(Test::all());
+        
+        // return view('test.index', compact('tests'))
+        //     ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-    public function create()
-    {
-        return view('tests.create');
-    }
 
     public function store(Request $request)
     {
@@ -30,14 +28,16 @@ class TestController extends Controller
 
         Test::create($request->all());
 
-        return redirect()->route('tests.index')
-            ->with('success', 'Test created successfully.');
+        return response()->json(['message' => 'Test successfully created']);
+        // return redirect()->route('tests.index')
+        //     ->with('success', 'Test created successfully.');
     }
 
 
     public function show(Test $test)
     {
-        return view('tests.show', compact('test'));
+        return response()->json($test->get());
+        // return view('tests.show', compact('test'));
     }
 
     public function edit(Test $test)
@@ -54,16 +54,19 @@ class TestController extends Controller
 
         $test->update($request->all());
 
-        return redirect()->route('tests.index')
-            ->with('success', 'Test updated successfully');
+        $test->save();
+        return response()->json($test);
+        // return redirect()->route('tests.index')
+        //     ->with('success', 'Test updated successfully');
     }
 
 
     public function destroy(Test $test)
     {
         $test->delete();
-
-        return redirect()->route('tests.index')
-            ->with('success', 'Test deleted successfully');
+        
+        return response()->json(['message' => 'Test with id {$test->id} has been successfully deleted']);
+        // return redirect()->route('tests.index')
+        //     ->with('success', 'Test deleted successfully');
     }
 }
